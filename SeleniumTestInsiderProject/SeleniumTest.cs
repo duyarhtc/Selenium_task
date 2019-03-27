@@ -1,20 +1,17 @@
 ﻿
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chrome;
-using System.Collections.ObjectModel;
+using OpenQA.Selenium.Interactions;
+using System;
 using System.Collections.Generic;
-using OpenQA.Selenium.Support.UI;
 
 namespace SeleniumTestInsiderProject
 {
- 
+
 
     [TestFixture]
-    public class UnitTest1
+    public class SeleniumTest
     {
         public IWebDriver driver;
         Verfying verfying;
@@ -29,7 +26,7 @@ namespace SeleniumTestInsiderProject
 
         //Task 1 : access to the site
         [Test]
-        public void TestMethod1()
+        public void AccessSiteStart()
         {
             driver.Navigate().GoToUrl("https://www.amazon.com");
             driver.Manage().Window.Maximize();
@@ -53,7 +50,7 @@ namespace SeleniumTestInsiderProject
             driver.FindElement(By.Id("nav-tools")).Click();           
             driver.FindElement(By.Id("ap_email")).SendKeys("seleniuminsider@gmail.com");
             driver.FindElement(By.Id("ap_password")).SendKeys("Hatice_06");
-            driver.FindElement(By.Id("signInSubmit")).Click();//Kullanıcı ad ve şifresi değiştrilebilir, site bazen 2 adımlı doğrulama yapabiliyor.
+            driver.FindElement(By.Id("signInSubmit")).Click();//Siteye kayıtlı Kullancının önceden giriş yapmış olduğu ve  doğrulama adımlarını tamamladığı varsayılmaktadır.Doğrulama code mail adresi=seleniuminsider@gmail.com / şifre:Hatice_06
             System.Threading.Thread.Sleep(3000);
             SearchSamsung();
         }
@@ -64,7 +61,7 @@ namespace SeleniumTestInsiderProject
         {
             driver.FindElement(By.ClassName("nav-searchbar")).Click();
             driver.FindElement(By.Id("twotabsearchtextbox")).SendKeys("samsung");
-            System.Threading.Thread.Sleep(4000);
+            //System.Threading.Thread.Sleep(4000);
             IWebElement container = driver.FindElement(By.Id("suggestions"));
             IReadOnlyCollection<IWebElement> menulist = container.FindElements(By.ClassName("s-suggestion"));
             if (menulist.Count > 0)
@@ -112,7 +109,7 @@ namespace SeleniumTestInsiderProject
             System.Threading.Thread.Sleep(5000);
             driver.FindElement(By.Id("add-to-wishlist-button-submit")).Click();
             driver.SwitchTo().ActiveElement().SendKeys(Keys.Enter);  //close sub window 
-           // SelectWishList();
+            SelectWishList();
 
         }
 
@@ -121,35 +118,14 @@ namespace SeleniumTestInsiderProject
         public void SelectWishList()
         {
 
-            driver.FindElement(By.Id("nav-tools")).SendKeys("");
+            IWebElement element= driver.FindElement(By.ClassName("nav-line-2"));
+            Actions builder = new Actions(driver);
+            builder.MoveToElement(element).Perform();
             System.Threading.Thread.Sleep(2000);
             driver.FindElement(By.Id("nav-al-whishlist")).Click();
 
         }
-
-            //string BaseWindow = driver.CurrentWindowHandle;
-
-        //ReadOnlyCollection<string> handles = driver.WindowHandles;
-
-        //foreach (string handle in handles)
-        //{
-
-        //    if (handle != BaseWindow)
-        //    {
-        //        driver.SwitchTo().Window(handle).Title.Equals("Add to List");
-
-        //    }
-        //}
-
-
-
-        //IWebElement elementPage = driver.FindElement(By.ClassName("a-popover-wrapper"));
-        //    elementPage.FindElement(By.XPath("//button[@data-action='a-popover-close']")).Click();
-//
-        //System.Threading.Thread.Sleep(3000);
-           // WishList();
-
-     
+         
 
         [TearDown]
         public void TestEnd()
